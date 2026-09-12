@@ -31,6 +31,10 @@ Benchmark test suite for automated code review engines on Kotlin (JVM, Ktor, Spr
 | `AuthManager.kt` | Hardcoded Secret Key & Plaintext Credential Logging (`println`) | Information Disclosure | CWE-798 / CWE-532 | High | **BLOCKING** |
 | `RedirectHelper.kt` | Open Redirect without destination host validation | Redirection | CWE-601 | Medium | **BLOCKING** |
 | `ProfileService.kt` | IDOR on account deletion without ownership check | Broken Access Control | CWE-639 | High | **BLOCKING** |
+| `CorsSettings.kt` | Wildcard \`anyHost()\` with \`allowCredentials = true\` | CORS Misconfiguration | CWE-942 | High | **BLOCKING** |
+| `XmlProcessor.kt` | XML parser without secure processing disabled (XXE) | Injection / XXE | CWE-611 | High | **BLOCKING** |
+| `CookieManager.kt` | Cookies explicitly configured with \`isHttpOnly = false\` and \`secure = false\` | Insecure Cookie | CWE-614 / CWE-1004 | Medium | **NON-BLOCKING** |
+| `AuthController.kt` | Authentication login route missing rate limiting or throttling | Missing Rate Limiting | CWE-307 | Medium | **NON-BLOCKING** |
 
 ### ⚡ Performance & Resource Leaks
 
@@ -45,7 +49,7 @@ Benchmark test suite for automated code review engines on Kotlin (JVM, Ktor, Spr
 
 | File | Safe Pattern Implemented | Expected Reviewer Result |
 | :--- | :--- | :---: |
-| `SafeGuards.kt` | Parameterized JDBC statements (`?`), strict domain whitelist redirect, idiomatic `.use { }` automatic resource closure | **0 False Positives** (Clean) |
+| `SafeGuards.kt` | Parameterized JDBC statements (`?`), strict domain whitelist redirect, idiomatic `.use { }` automatic resource closure, secure XML processing (`FEATURE_SECURE_PROCESSING`), hardened `HttpOnly`/`Secure` cookies | **0 False Positives** (Clean) |
 
 ---
 
@@ -68,6 +72,6 @@ curl -X POST http://localhost:8081/api/v1/review/trigger \
 
 ## 📊 Benchmark Validation Results
 
-- **Detection Rate:** 10 / 10 (100%)
+- **Detection Rate:** 15 / 15 (100%)
 - **False Positive Rate:** 0 / 1 (`SafeGuards.kt` completely passed)
 - **False Negative Rate:** 0%
